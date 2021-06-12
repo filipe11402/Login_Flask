@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import os
+from os import path
 
 db = SQLAlchemy()
 DB_NAME = 'login.db'
@@ -13,13 +13,15 @@ def create_app():
 
     from .auth import views
 
-    create_database(app)
-
     app.register_blueprint(views.accounts, url_prefix='/accounts')
+
+    from .auth.models import User
+
+    create_database(app)
 
     return app
 
 
 def create_database(app):
-    if not os.path.exists('src/' + DB_NAME):
+    if not path.exists('src/' + DB_NAME):
         db.create_all(app=app)
